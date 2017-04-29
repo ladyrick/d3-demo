@@ -1,0 +1,41 @@
+<!doctype html>
+<svg></svg>
+
+<script src="d3/d3.js"></script>
+
+<script>
+    var h = 600, w = 600, r = 100
+    svg = d3.select('svg')
+        .attr('width', w)
+        .attr('height', h)
+
+    svg.append('circle')
+        .attr('cx', w / 2)
+        .attr('cy', h / 2)
+        .attr('r', r)
+        .style('fill', 'none')
+        .style('stroke', 'white')
+        .style('stroke-width', 3)
+
+    var g = svg.append('g');
+
+    var i = 0;
+    var drawCircle = () => {
+        let theta = i * Math.PI / 180
+        g.append('circle')
+            .attr('cx', w / 2 + r * Math.sin(theta))
+            .attr('cy', h / 2 + r * Math.sin(theta - Math.PI / 2))
+            .attr('r', 2 * r * Math.sin(theta / 2))
+            .style('fill', 'none')
+            .style('stroke', 'red')
+            .style('opacity', 0)
+            .transition().duration(500)
+            .style('opacity', 0.3)
+        i += 2;
+        if (i < 360) {
+            d3.timeout(drawCircle, 100);
+        }
+    }
+    drawCircle();
+
+</script>

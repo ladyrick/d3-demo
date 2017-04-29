@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<script src="d3.js"></script>
+<script src="d3/d3.js"></script>
 
 <svg></svg>
 <script>
     var svg = d3.select("svg").attr('width', 700).attr('height', 700);
-    var dataset = d3.range(300).map(x => x * x);
-    var rectHeight = 2;
-    var color = d3.schemeCategory20
+    var dataset = d3.range(10).map(x => x * x);
+    var rectHeight = 20;
+    var color = d3.scaleOrdinal(d3.schemeCategory20.sort(() => Math.random() - 0.5))
     var min = d3.min(dataset);
     var max = d3.max(dataset);
     var linear = d3.scaleLinear()
@@ -23,7 +23,7 @@
         .attr('height', rectHeight - 1)
         .attr('fill', 'steelblue')
         .transition().duration(500).ease(d3.easeBounce)
-        .attr('fill', (d, i) => color[i % 20])
+        .attr('fill', (d, i) => color(i % 20))
         .attr('width', d => linear(d));
     svg.append('g')
         .attr('class', 'axis')
@@ -34,6 +34,6 @@
             .attr('fill', 'yellow'))
         .on('mouseout', (d, i, n) => d3.select(n[i])
             .transition().duration(500)
-            .attr('fill', () => color[i % 20]))
+            .attr('fill', () => color(i % 20)))
 
-</script>
+</script>`
