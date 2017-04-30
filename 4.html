@@ -1,0 +1,57 @@
+<!doctype html>
+<svg></svg>
+
+<script src="d3/d3.js"></script>
+
+<script>
+    var width = 500;
+    var height = 500;
+    var data = 100;
+    var barHeight = 50;
+    var barWidth = 400;
+    var border = 30;
+    var posx = 30;
+    var posy = 30;
+    var svg = d3.select('svg')
+        .attr('width', width)
+        .attr('height', height)
+
+    var mask = svg.append('mask')
+        .attr('id', 'myMask')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', barWidth)
+        .attr('height', barHeight)
+        .append("rect")
+        .attr('width', data / 100 * barWidth)
+        .attr('height', barHeight)
+        .attr('x', posx - data / 100 * barWidth)
+        .attr('y', posy)
+        .attr('rx', barHeight / 2)
+        .attr('ry', barHeight / 2)
+        .attr('fill', 'white')
+        .transition().duration(10000)
+        .attr('x', posx)
+
+    var bar = svg.append('rect')
+        .attr('width', data / 100 * barWidth)
+        .attr('height', barHeight)
+        .attr('x', posx)
+        .attr('y', posy)
+        .attr('rx', barHeight / 2)
+        .attr('ry', barHeight / 2)
+        .attr('fill', 'red')
+        .attr('mask', 'url(#myMask)')
+
+    var border = svg.append('rect')
+        .attr('width', barWidth + border)
+        .attr('height', barHeight + border)
+        .attr('x', posx - border / 2)
+        .attr('y', posy - border / 2)
+        .attr('rx', barHeight / 2 + border / 2)
+        .attr('ry', barHeight / 2 + border / 2)
+        .attr('fill', 'none')
+        .attr('stroke', 'black')
+        .attr('stroke-width', border)
+
+</script>
