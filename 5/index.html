@@ -1,67 +1,67 @@
 <meta charset="utf-8" />
 <script src="../d3/d3.min.js"></script>
 <style>
-	text {
-		font-family: consolas, monospace;
-		font-size: 20px;
-		width: 20px;
-		font-weight: bold;
-	}
+    text {
+        font-family: consolas, monospace;
+        font-size: 20px;
+        width: 20px;
+        font-weight: bold;
+    }
 </style>
 <svg></svg>
 <script>
-	var svg = d3.select('svg')
-		.attr('width', 20 * 26)
-		.attr('height', 120)
+    var svg = d3.select('svg')
+        .attr('width', 20 * 26)
+        .attr('height', 120)
 
-	function update(alpha) {
-		var duration = 500
-		svg.selectAll('text')
-			.data(alpha, function (d) { return d ? d : this.alpha })
-			.exit()
-			.transition().duration(duration)
-			.attr('y', 100)
-			.style('opacity',0)
-			.remove()
+    function update(alpha) {
+        var duration = 500
+        svg.selectAll('text')
+            .data(alpha, function (d) { return d ? d : this.alpha })
+            .exit()
+            .transition().duration(duration)
+            .attr('y', 100)
+            .style('opacity', 0)
+            .remove()
 
-		svg.selectAll('text')
-			.data(alpha, function (d) { return d ? d : this.alpha })
-			.text(d => d)
-			.transition().duration(duration)
-			.style('fill', 'blue')
-			.attr('x', (d, i) => i * 20)
-			.attr('y', 60)
+        svg.selectAll('text')
+            .data(alpha, function (d) { return d ? d : this.alpha })
+            .text(d => d)
+            .transition().duration(duration)
+            .style('fill', 'blue')
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 60)
 
-		svg.selectAll('text')
-			.data(alpha, function (d) { return d ? d : this.alpha })
-			.enter().append('text')
-			.attr('alpha', d => d)
-			.text(d => d)
-			.attr('x', (d, i) => i * 20)
-			.attr('y', 20)
-			.style('fill', 'red')
-			.style('opacity',0)
-			.transition().duration(duration)
-			.attr('y', 60)
-			.style('opacity',1)
+        svg.selectAll('text')
+            .data(alpha, function (d) { return d ? d : this.alpha })
+            .enter().append('text')
+            .attr('alpha', d => d)
+            .text(d => d)
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 20)
+            .style('fill', 'red')
+            .style('opacity', 0)
+            .transition().duration(duration)
+            .attr('y', 60)
+            .style('opacity', 1)
 
 
-	}
+    }
 
-	var alphabet = d3.range(26).map(d => String.fromCharCode(d + 65));
+    var alphabet = d3.range(26).map(d => String.fromCharCode(d + 65));
 
-	function rand() {
-		var i = 26;
-		while (--i) {
-			var t = Math.floor(d3.randomUniform(0, i)());
-			var nt = alphabet[t];
-			alphabet[t] = alphabet[i];
-			alphabet[i] = nt;
-		}
-		var randalpha = alphabet.slice(Math.floor(Math.random() * 26)).sort()
-		update(randalpha)
-	}
-	rand()
-	setInterval(rand, 1000)
+    function rand() {
+        var i = 26;
+        while (--i) {
+            var t = Math.floor(d3.randomUniform(0, i)());
+            var nt = alphabet[t];
+            alphabet[t] = alphabet[i];
+            alphabet[i] = nt;
+        }
+        var randalpha = alphabet.slice(Math.floor(Math.random() * 26)).sort()
+        update(randalpha)
+    }
+    rand()
+    setInterval(rand, 1000)
 
 </script>
