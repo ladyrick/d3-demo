@@ -7,16 +7,57 @@
         width: 20px;
         font-weight: bold;
     }
+
+    svg {
+        display: block
+    }
 </style>
-<svg></svg>
+<svg id="s1"></svg>
+<svg id="s2"></svg>
 <script>
-    var svg = d3.select('svg')
+    var svg1 = d3.select('svg#s1')
         .attr('width', 20 * 26)
         .attr('height', 120)
 
-    function update(alpha) {
+    var svg2 = d3.select('svg#s2')
+        .attr('width', 20 * 26)
+        .attr('height', 120)
+
+    function update1(alpha) {
         var duration = 500
-        svg.selectAll('text')
+        svg1.selectAll('text')
+            .data(alpha)
+            .exit()
+            .transition().duration(duration)
+            .attr('y', 100)
+            .style('opacity', 0)
+            .remove()
+
+        svg1.selectAll('text')
+            .data(alpha)
+            .text(d => d)
+            .transition().duration(duration)
+            .style('fill', 'blue')
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 60)
+
+        svg1.selectAll('text')
+            .data(alpha)
+            .enter().append('text')
+            .attr('alpha', d => d)
+            .text(d => d)
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 20)
+            .style('fill', 'red')
+            .style('opacity', 0)
+            .transition().duration(duration)
+            .attr('y', 60)
+            .style('opacity', 1)
+    }
+
+    function update2(alpha) {
+        var duration = 500
+        svg2.selectAll('text')
             .data(alpha, function (d) { return d ? d : this.alpha })
             .exit()
             .transition().duration(duration)
@@ -24,7 +65,7 @@
             .style('opacity', 0)
             .remove()
 
-        svg.selectAll('text')
+        svg2.selectAll('text')
             .data(alpha, function (d) { return d ? d : this.alpha })
             .text(d => d)
             .transition().duration(duration)
@@ -32,7 +73,7 @@
             .attr('x', (d, i) => i * 20)
             .attr('y', 60)
 
-        svg.selectAll('text')
+        svg2.selectAll('text')
             .data(alpha, function (d) { return d ? d : this.alpha })
             .enter().append('text')
             .attr('alpha', d => d)
@@ -44,9 +85,8 @@
             .transition().duration(duration)
             .attr('y', 60)
             .style('opacity', 1)
-
-
     }
+
 
     var alphabet = d3.range(26).map(d => String.fromCharCode(d + 65));
 
@@ -59,9 +99,10 @@
             alphabet[i] = nt;
         }
         var randalpha = alphabet.slice(Math.floor(Math.random() * 26)).sort()
-        update(randalpha)
+        update1(randalpha)
+        update2(randalpha)
     }
-    rand()
-    setInterval(rand, 1000)
+    
+    d3.interval(rand, 1000, d3.now() - 1000)
 
 </script>
