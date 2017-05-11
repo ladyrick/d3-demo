@@ -1,6 +1,10 @@
 <meta charset="utf-8" />
 <script src="../d3/d3.min.js"></script>
 <style>
+    body {
+        background: white;
+    }
+
     text {
         font-family: consolas, monospace;
         font-size: 20px;
@@ -24,11 +28,12 @@
         .attr('height', 120)
 
     function update1(alpha) {
-        var duration = 500
+        var duration = 500;
         svg1.selectAll('text')
             .data(alpha)
             .exit()
-            .transition().duration(duration)
+            .transition()
+            .duration(duration)
             .attr('y', 100)
             .style('opacity', 0)
             .remove()
@@ -36,59 +41,75 @@
         svg1.selectAll('text')
             .data(alpha)
             .text(d => d)
-            .transition().duration(duration)
+            .transition()
+            .duration(duration)
             .style('fill', 'blue')
             .attr('x', (d, i) => i * 20)
             .attr('y', 60)
 
         svg1.selectAll('text')
             .data(alpha)
-            .enter().append('text')
+            .enter()
+            .append('text')
             .attr('alpha', d => d)
             .text(d => d)
             .attr('x', (d, i) => i * 20)
             .attr('y', 20)
             .style('fill', 'red')
             .style('opacity', 0)
-            .transition().duration(duration)
+            .transition()
+            .duration(duration)
             .attr('y', 60)
             .style('opacity', 1)
     }
 
     function update2(alpha) {
-        var duration = 500
+        var duration = 500;
         svg2.selectAll('text')
-            .data(alpha, function (d) { return d ? d : this.alpha })
+            .data(alpha,
+            function (d) {
+                return d ? d : this.alpha
+            })
             .exit()
-            .transition().duration(duration)
+            .transition()
+            .duration(duration)
             .attr('y', 100)
             .style('opacity', 0)
             .remove()
 
         svg2.selectAll('text')
-            .data(alpha, function (d) { return d ? d : this.alpha })
+            .data(alpha,
+            function (d) {
+                return d ? d : this.alpha
+            })
             .text(d => d)
-            .transition().duration(duration)
+            .transition()
+            .duration(duration)
             .style('fill', 'blue')
             .attr('x', (d, i) => i * 20)
             .attr('y', 60)
 
         svg2.selectAll('text')
-            .data(alpha, function (d) { return d ? d : this.alpha })
-            .enter().append('text')
+            .data(alpha,
+            function (d) {
+                return d ? d : this.alpha
+            })
+            .enter()
+            .append('text')
             .attr('alpha', d => d)
             .text(d => d)
             .attr('x', (d, i) => i * 20)
             .attr('y', 20)
             .style('fill', 'red')
             .style('opacity', 0)
-            .transition().duration(duration)
+            .transition()
+            .duration(duration)
             .attr('y', 60)
             .style('opacity', 1)
     }
 
-
-    var alphabet = d3.range(26).map(d => String.fromCharCode(d + 65));
+    var alphabet = d3.range(26)
+        .map(d => String.fromCharCode(d + 65));
 
     function rand() {
         var i = 26;
@@ -98,11 +119,12 @@
             alphabet[t] = alphabet[i];
             alphabet[i] = nt;
         }
-        var randalpha = alphabet.slice(Math.floor(Math.random() * 26)).sort()
-        update1(randalpha)
+        var randalpha = alphabet.slice(Math.floor(Math.random() * 26))
+            .sort();
+        update1(randalpha);
         update2(randalpha)
     }
-    
+
     d3.interval(rand, 1000, d3.now() - 1000)
 
 </script>
