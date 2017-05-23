@@ -1,0 +1,43 @@
+<!doctype html>
+<svg></svg>
+
+<script src="../d3/d3.js"></script>
+
+<script>
+    var svg = d3.select('svg')
+        .attr('width', 600)
+        .attr('height', 600)
+
+    var p = d3.path();
+
+    var path = svg.append('path')
+        .style('stroke', 'red')
+        .style('fill', 'none')
+        .style('display', 'none')
+
+    var sampleNum = 20000;
+    var m = 29;
+    var n = 30;
+
+    for (var t = 0; t <= sampleNum; t += 1) {
+        var theta = t / sampleNum * 2 * Math.PI;
+        var x = Math.sin(m * theta) * 250 + 300;
+        var y = Math.sin(n * theta) * 250 + 300;
+        if (t === 0) {
+            p.moveTo(x, y)
+        } else {
+            p.lineTo(x, y)
+        }
+    }
+
+    path.attr('d', p.toString())
+
+    var pathLen = document.querySelector('path').getTotalLength();
+
+    path.style('stroke-dasharray', pathLen)
+        .style('stroke-dashoffset', pathLen)
+        .style('display', 'inline')
+        .transition().duration(30000).ease(d3.easeLinear)
+        .style('stroke-dashoffset', 0)
+
+</script>

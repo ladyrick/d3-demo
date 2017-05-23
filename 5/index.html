@@ -1,43 +1,131 @@
 <!doctype html>
-<svg></svg>
-
-<script src="../d3/d3.js"></script>
-
-<script>
-    var svg = d3.select('svg')
-        .attr('width', 600)
-        .attr('height', 600)
-
-    var p = d3.path();
-
-    var path = svg.append('path')
-        .style('stroke', 'red')
-        .style('fill', 'none')
-        .style('display','none')
-
-    var sampleNum = 20000;
-    var m = 29;
-    var n = 30;
-
-    for (var t = 0; t <= sampleNum; t += 1) {
-        var theta = t / sampleNum * 2 * Math.PI;
-        var x = Math.sin(m * theta) * 250 + 300;
-        var y = Math.sin(n * theta) * 250 + 300;
-        if (t === 0) {
-            p.moveTo(x, y)
-        } else {
-            p.lineTo(x, y)
-        }
+<meta charset="utf-8" />
+<script src="../d3/d3.min.js"></script>
+<style>
+    body {
+        background: white;
     }
 
-    path.attr('d', p.toString())
+    text {
+        font-family: consolas, monospace;
+        font-size: 20px;
+        width: 20px;
+        font-weight: bold;
+    }
 
-    var pathLen = document.querySelector('path').getTotalLength();
+    svg {
+        display: block
+    }
+</style>
+<svg id="s1"></svg>
+<svg id="s2"></svg>
+<script>
+    var svg1 = d3.select('svg#s1')
+        .attr('width', 20 * 26)
+        .attr('height', 120);
 
-    path.style('stroke-dasharray', pathLen)
-        .style('stroke-dashoffset', pathLen)
-        .style('display','inline')
-        .transition().duration(30000).ease(d3.easeLinear)
-        .style('stroke-dashoffset', 0)
+    var svg2 = d3.select('svg#s2')
+        .attr('width', 20 * 26)
+        .attr('height', 120);
+
+    function update1(alpha) {
+        var duration = 500;
+        svg1.selectAll('text')
+            .data(alpha)
+            .exit()
+            .transition()
+            .duration(duration)
+            .attr('y', 100)
+            .style('opacity', 0)
+            .remove()
+
+        svg1.selectAll('text')
+            .data(alpha)
+            .text(d => d)
+            .transition()
+            .duration(duration)
+            .style('fill', 'blue')
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 60)
+
+        svg1.selectAll('text')
+            .data(alpha)
+            .enter()
+            .append('text')
+            .attr('alpha', d => d)
+            .text(d => d)
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 20)
+            .style('fill', 'red')
+            .style('opacity', 0)
+            .transition()
+            .duration(duration)
+            .attr('y', 60)
+            .style('opacity', 1)
+    }
+
+    function update2(alpha) {
+        var duration = 500;
+        svg2.selectAll('text')
+            .data(alpha,
+            function (d) {
+                return d ? d : this.alpha
+            })
+            .exit()
+            .transition()
+            .duration(duration)
+            .attr('y', 100)
+            .style('opacity', 0)
+            .remove()
+
+        svg2.selectAll('text')
+            .data(alpha,
+            function (d) {
+                return d ? d : this.alpha
+            })
+            .text(d => d)
+            .transition()
+            .duration(duration)
+            .style('fill', 'blue')
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 60)
+
+        svg2.selectAll('text')
+            .data(alpha,
+            function (d) {
+                return d ? d : this.alpha
+            })
+            .enter()
+            .append('text')
+            .attr('alpha', d => d)
+            .text(d => d)
+            .attr('x', (d, i) => i * 20)
+            .attr('y', 20)
+            .style('fill', 'red')
+            .style('opacity', 0)
+            .transition()
+            .duration(duration)
+            .attr('y', 60)
+            .style('opacity', 1)
+    }
+
+    var alphabet = d3.range(26)
+        .map(d => String.fromCharCode(d + 65));
+
+    function rand() {
+        var i = 26;
+        while (--i) {
+            var t = Math.floor(d3.randomUniform(0, i)());
+            var nt = alphabet[t];
+            alphabet[t] = alphabet[i];
+            alphabet[i] = nt;
+        }
+        var randalpha = alphabet.slice(Math.floor(Math.random() * 26))
+            .sort();
+        update1(randalpha);
+        update2(randalpha)
+    }
+
+    d3.interval(rand, 1000, d3.now() - 1000)
 
 </script>
