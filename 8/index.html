@@ -30,33 +30,50 @@
         .attr("height", 100)
     function Arrow(cx, cy) {
         this.r = 20;
-        this.front = -2;
-        this.end = 1 - this.front;
+        this.e = 0.5;
+        this.rotate = 0;
         this.cx = cx * gap;
         this.cy = cy * gap;
-        this.arrow = svg.append("line")
-            .attr("x1", this.cx - this.r * this.end)
-            .attr("y1", this.cy)
-            .attr("x2", this.cx + this.r * this.front)
-            .attr("y2", this.cy)
-            .style("stroke", "black")
+        this.arrow = svg.append("g");
+        var path = d3.path();
+        path.moveTo(this.cx + this.r, this.cy);
+        path.lineTo(this.cx, this.cy + this.e * this.r);
+        path.lineTo(this.cx, this.cy - this.e * this.r);
+        path.closePath();
+        this.arrow.append("path")
+            .attr("d", path.toString())
+            .style("fill", "red");
+        path = d3.path();
+        path.moveTo(this.cx - this.r, this.cy);
+        path.lineTo(this.cx, this.cy + this.e * this.r);
+        path.lineTo(this.cx, this.cy - this.e * this.r);
+        path.closePath();
+        this.arrow.append("path")
+            .attr("d", path.toString())
+            .style("fill", "blue");
+        this.arrow.append("circle")
+            .attr("cx", this.cx)
+            .attr("cy", this.cy)
+            .attr("r", 3)
+            .style("stroke", "aqua")
+            .style("fill", "black")
+        this.arrow.attr("transform", "rotate(" + this.rotate + "," + this.cx + " " + this.cy + ")");
     }
 
     Arrow.prototype.setFace = function (x, y) {
         if (Math.abs(this.cx) > window.screen.width / 2 + this.r / 2 || Math.abs(this.cy) > window.screen.height / 2 + this.r / 2) {
             return;
         }
-        var r = Math.sqrt((x - this.cx) * (x - this.cx) + (y - this.cy) * (y - this.cy));
-        if (r < 1) {
+        var dx = x - this.cx;
+        var dy = y - this.cy;
+        if (dx > -1 && dx < 1 && dy > -1 && dy < 1) {
             return;
         }
-        var cos = (x - this.cx) / r;
-        var sin = (y - this.cy) / r;
-        this.arrow
-            .attr("x1", this.cx - cos * this.r * this.end)
-            .attr("y1", this.cy - sin * this.r * this.end)
-            .attr("x2", this.cx + cos * this.r * this.front)
-            .attr("y2", this.cy + sin * this.r * this.front)
+        this.rotate = Math.atan((y - this.cy) / (x - this.cx)) / Math.PI * 180;
+        if (dx < 0) {
+            this.rotate += 180;
+        }
+        this.arrow.attr("transform", "rotate(" + this.rotate + "," + this.cx + " " + this.cy + ")");
     }
 
     var Arrows = [];
