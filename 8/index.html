@@ -1,0 +1,72 @@
+<!doctype html>
+<meta charset="utf-8" />
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+    }
+
+    svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        overflow: visible;
+    }
+</style>
+
+<svg></svg>
+
+<script src="../d3/d3.min.js"></script>
+<script>
+    "use strict";
+    var gap = 30;
+    var svg = d3.select("svg")
+        .attr("width", 100)
+        .attr("height", 100)
+    function Arrow(cx, cy) {
+        this.r = 15;
+        this.cx = cx;
+        this.cy = cy;
+        this.x1 = this.cx * gap;
+        this.y1 = this.cy * gap;
+        this.x2 = this.cx * gap + this.r;
+        this.y2 = this.cy * gap;
+        this.arrow = svg.append("line")
+            .attr("x1", this.x1)
+            .attr("y1", this.y1)
+            .attr("x2", this.x2)
+            .attr("y2", this.y2)
+            .style("stroke", "black")
+        this.setFace = function (x, y) {
+            var r = Math.sqrt((x - this.x1) * (x - this.x1) + (y - this.y1) * (y - this.y1));
+            if (r < 1) {
+                return;
+            }
+            this.x2 = this.x1 + this.r * (x - this.x1) / r;
+            this.y2 = this.y1 + this.r * (y - this.y1) / r;
+            this.arrow.attr("x2", this.x2);
+            this.arrow.attr("y2", this.y2);
+        }.bind(this);
+    }
+
+    var Arrows = [];
+
+    for (var i = -Math.floor(window.screen.width / 2 / gap); i <= Math.floor(window.screen.width / 2 / gap); i++) {
+        for (var j = -Math.floor(window.screen.height / 2 / gap); j <= Math.floor(window.screen.height / 2 / gap); j++) {
+            Arrows.push(new Arrow(i, j));
+        }
+    }
+
+    function towards(event) {
+        Arrows.forEach(function (a) {
+            a.setFace(event.clientX - window.innerWidth / 2, event.clientY - window.innerHeight / 2);
+        })
+    }
+    document.body.onmousemove = towards;
+
+</script>
