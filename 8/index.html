@@ -30,7 +30,7 @@
         .attr("height", 100)
     function Arrow(cx, cy) {
         this.r = 15;
-        this.e = 0.5;
+        this.e = 0.2;
         this.rotate = 0;
         this.cx = cx * gap;
         this.cy = cy * gap;
@@ -60,23 +60,33 @@
         this.arrow.attr("transform", "rotate(" + this.rotate + "," + this.cx + " " + this.cy + ")");
     }
 
-    Arrow.prototype.setFace = function (x, y) {
-        if (Math.abs(this.cx) > window.screen.width / 2 + this.r / 2 || Math.abs(this.cy) > window.screen.height / 2 + this.r / 2) {
-            return;
-        }
-        var dx = x - this.cx;
-        var dy = y - this.cy;
-        if (dx > -1 && dx < 1 && dy > -1 && dy < 1) {
-            return;
-        }
-        this.rotate = Math.atan((y - this.cy) / (x - this.cx)) / Math.PI * 180;
-        if (dx < 0) {
+    Arrow.prototype.refresh = function (x, y) {
+        // if you let the mouse be a magnet:
+        // var dx = x - this.cx;
+        // var dy = y - this.cy;
+        // var dis2 = dx * dx + dy * dy;
+        // var forceX = dx / dis2;
+        // var forceY = dy / dis2;
+        var forceX = 0;
+        var forceY = 0;
+
+        Magnets.forEach((m) => {
+            var dx = m.x - this.cx;
+            var dy = m.y - this.cy;
+            var dis2 = dx * dx + dy * dy;
+            forceX += m.strength * dx / dis2;
+            forceY += m.strength * dy / dis2;
+        })
+
+        this.rotate = Math.atan(forceY / forceX) / Math.PI * 180;
+        if (forceX < 0) {
             this.rotate += 180;
         }
         this.arrow.attr("transform", "rotate(" + this.rotate + "," + this.cx + " " + this.cy + ")");
     }
 
     var Arrows = [];
+    var Magnets = [];
 
     for (var i = -Math.floor(window.screen.width / 2 / gap); i <= Math.floor(window.screen.width / 2 / gap); i++) {
         for (var j = -Math.floor(window.screen.height / 2 / gap); j <= Math.floor(window.screen.height / 2 / gap); j++) {
@@ -84,11 +94,34 @@
         }
     }
 
-    function towards(event) {
+    function refresh(event) {
         Arrows.forEach(function (a) {
-            a.setFace(event.clientX - window.innerWidth / 2, event.clientY - window.innerHeight / 2);
+            a.refresh(event.clientX - window.innerWidth / 2, event.clientY - window.innerHeight / 2);
         })
     }
-    document.body.onmousemove = towards;
+    function placeMagnet(event) {
+        var magnet = {
+            x: event.clientX - window.innerWidth / 2,
+            y: event.clientY - window.innerHeight / 2,
+            strength: 1
+        }
+        Magnets.push(magnet);
+        svg.append("circle")
+            .attr("cx", magnet.x)
+            .attr("cy", magnet.y)
+            .attr("r", 20)
+            .style("fill", "blue")
+            .on("click", checkMagnets)
+        refresh(event);
+    }
+
+    function checkMagnets(event) {
+        
+    }
+
+    // if you let the mouse be a magnet:
+    //document.body.onmousemove = refresh;
+
+    document.body.onclick = placeMagnet;
 
 </script>
