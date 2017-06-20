@@ -30,28 +30,33 @@
         .attr("height", 100)
     function Arrow(cx, cy) {
         this.r = 15;
-        this.cx = cx;
-        this.cy = cy;
-        this.x1 = this.cx * gap;
-        this.y1 = this.cy * gap;
-        this.x2 = this.cx * gap + this.r;
-        this.y2 = this.cy * gap;
+        this.front = -2;
+        this.end = 1 - this.front;
+        this.cx = cx * gap;
+        this.cy = cy * gap;
         this.arrow = svg.append("line")
-            .attr("x1", this.x1)
-            .attr("y1", this.y1)
-            .attr("x2", this.x2)
-            .attr("y2", this.y2)
+            .attr("x1", this.cx - this.r * this.end)
+            .attr("y1", this.cy)
+            .attr("x2", this.cx + this.r * this.front)
+            .attr("y2", this.cy)
             .style("stroke", "black")
-        this.setFace = function (x, y) {
-            var r = Math.sqrt((x - this.x1) * (x - this.x1) + (y - this.y1) * (y - this.y1));
-            if (r < 1) {
-                return;
-            }
-            this.x2 = this.x1 + this.r * (x - this.x1) / r;
-            this.y2 = this.y1 + this.r * (y - this.y1) / r;
-            this.arrow.attr("x2", this.x2);
-            this.arrow.attr("y2", this.y2);
-        }.bind(this);
+    }
+
+    Arrow.prototype.setFace = function (x, y) {
+        if (Math.abs(this.cx) > window.screen.width / 2 + this.r / 2 || Math.abs(this.cy) > window.screen.height / 2 + this.r / 2) {
+            return;
+        }
+        var r = Math.sqrt((x - this.cx) * (x - this.cx) + (y - this.cy) * (y - this.cy));
+        if (r < 1) {
+            return;
+        }
+        var cos = (x - this.cx) / r;
+        var sin = (y - this.cy) / r;
+        this.arrow
+            .attr("x1", this.cx - cos * this.r * this.end)
+            .attr("y1", this.cy - sin * this.r * this.end)
+            .attr("x2", this.cx + cos * this.r * this.front)
+            .attr("y2", this.cy + sin * this.r * this.front)
     }
 
     var Arrows = [];
