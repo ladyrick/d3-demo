@@ -103,25 +103,22 @@
         var magnet = {
             x: event.clientX - window.innerWidth / 2,
             y: event.clientY - window.innerHeight / 2,
-            strength: 1
+            strength: event.button - 1
         }
         Magnets.push(magnet);
         svg.append("circle")
             .attr("cx", magnet.x)
             .attr("cy", magnet.y)
             .attr("r", 20)
-            .style("fill", "blue")
+            .style("fill", event.button === 0 ? "red" : "blue")
             .on("click", checkMagnets)
         refresh(event);
-    }
-
-    function checkMagnets(event) {
-        
     }
 
     // if you let the mouse be a magnet:
     //document.body.onmousemove = refresh;
 
-    document.body.onclick = placeMagnet;
+    document.body.onmousedown = placeMagnet;
+    document.body.oncontextmenu = () => false;
 
 </script>
