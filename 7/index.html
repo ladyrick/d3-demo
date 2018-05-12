@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8" />
+<style>
+    body {
+        background: #F3F5F6;
+    }
+</style>
+<svg></svg>
+
+<script src="../d3/d3.min.js"></script>
+<script>
+    var svg = d3.select('svg')
+        .attr('width', 400)
+        .attr('height', 400)
+
+    var bg = svg.append('rect')
+        .attr('width', 300)
+        .attr('height', 300)
+        .attr('x', 50)
+        .attr('y', 50)
+        .attr('rx', 50)
+        .attr('ry', 50)
+        .style('fill', 'white')
+
+    var bg_cir = svg.append('circle')
+        .attr('cx', 200)
+        .attr('cy', 200)
+        .attr('r', 100)
+        .style('fill', '#FEEFF4');
+
+    var path = svg.append('path')
+        .attr('id', 'p')
+        .style('stroke', 'aqua')
+        .style('stroke-width', 100)
+        .style('fill', 'none')
+
+    var cir = svg.append('circle')
+        .attr('cx', 200)
+        .attr('cy', 200)
+        .attr('r', 60)
+        .style('fill', '#EC366B');
+
+    var min_text = svg.append('text')
+        .attr('x', 200)
+        .attr('y', 200)
+        .attr('alignment-baseline', 'middle')
+        .attr('text-anchor', 'middle')
+
+    function draw(sec) {
+        if (sec === 0) {
+            min_text.text(0 + " min");
+            path.attr('d', "");
+            clearInterval(interval);
+            return;
+        }
+        min_text.text((Math.ceil(sec / 60) - 1) + " min");
+        var p = d3.path();
+        var theta = Math.PI / 30 * ((sec + 59) % 60 + 1) - Math.PI / 2;
+        p.arc(200, 200, 50, -Math.PI / 2, theta);
+        path.attr('d', p.toString());
+    }
+
+    var interval = 0;
+
+    function init(sec) {
+        draw(sec--);
+        if (sec > 0) {
+            interval = setInterval(() => draw(sec--), 1000);
+        }
+    }
+
+    init(122);
+
+</script>
